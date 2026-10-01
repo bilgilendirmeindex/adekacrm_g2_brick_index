@@ -397,6 +397,7 @@
             } else {
                 document.getElementById('btnYeni').classList.add('active');
             }
+            updateDashboard();
         }
 
         function initMapData() {
@@ -545,29 +546,29 @@
             let html = "";
             let hEski = 0, kEski = 0, iEski = 0, mEski = 0, uEski = 0, potEski = 0, drEski = 0;
             if (selectedEski.length > 0) {
-                html += `<div class="list-header">MEVCUT YAPI SEÇİMLERİ (${selectedEski.length})</div>`;
+                if (activeMode === 'eski') html += `<div class="list-header">MEVCUT YAPI SEÇİMLERİ (${selectedEski.length})</div>`;
                 selectedEski.forEach(layer => {
                     const d = getData(layer.feature.properties); const ratio = ratiosEski[d.gid] || 1.0;
                     hEski += d.raw_hedef * ratio; kEski += d.raw_kutu * ratio; iEski += d.raw_idx * ratio;
                     mEski += d.raw_mgs * ratio; uEski += d.raw_ugs * ratio;
                     potEski += d.raw_pot * ratio; drEski += d.raw_dr * ratio; // YENI
-                    html += generateCardHTML(d, ratio, 'eski');
+                    if (activeMode === 'eski') html += generateCardHTML(d, ratio, 'eski');
                 });
             }
 
             let hYeni = 0, kYeni = 0, iYeni = 0, mYeni = 0, uYeni = 0, potYeni = 0, drYeni = 0;
             if (selectedYeni.length > 0) {
-                html += `<div class="list-header" style="margin-top:20px;">YENİ YAPI TASLAK SEÇİMLERİ (${selectedYeni.length})</div>`;
+                if (activeMode === 'yeni') html += `<div class="list-header">YENİ YAPI TASLAK SEÇİMLERİ (${selectedYeni.length})</div>`;
                 selectedYeni.forEach(layer => {
                     const d = getData(layer.feature.properties); const ratio = ratiosYeni[d.gid] || 1.0;
                     hYeni += d.raw_hedef * ratio; kYeni += d.raw_kutu * ratio; iYeni += d.raw_idx * ratio;
                     mYeni += d.raw_mgs * ratio; uYeni += d.raw_ugs * ratio;
                     potYeni += d.raw_pot * ratio; drYeni += d.raw_dr * ratio; // YENI
-                    html += generateCardHTML(d, ratio, 'yeni');
+                    if (activeMode === 'yeni') html += generateCardHTML(d, ratio, 'yeni');
                 });
             }
 
-            if (selectedEski.length === 0 && selectedYeni.length === 0) {
+            if ((activeMode === 'eski' && selectedEski.length === 0) || (activeMode === 'yeni' && selectedYeni.length === 0)) {
                 html = '<div class="empty-state"><i class="fa-solid fa-layer-group"></i>Henüz bölge seçilmedi.<br>Haritadan tıklayarak veya arama kutusundan ekleyebilirsiniz.</div>';
             }
             listContainer.innerHTML = html;
